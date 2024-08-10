@@ -29,35 +29,35 @@ module "jenkins_agent" {
   }
 }
 
-# resource "aws_key_pair" "tools" {
-#   key_name   = "tools"
-#   # you can paste the public key directly like this
-#   #public_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL6ONJth+DzeXbU3oGATxjVmoRjPepdl7sBuPzzQT2Nc sivak@BOOK-I6CR3LQ85Q"
-#   public_key = file("~/.ssh/tools.pub")
-#   # ~ means windows home directory
-# }
+resource "aws_key_pair" "tools" {
+  key_name   = "tools"
+  # you can paste the public key directly like this
+  #public_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL6ONJth+DzeXbU3oGATxjVmoRjPepdl7sBuPzzQT2Nc sivak@BOOK-I6CR3LQ85Q"
+  public_key = file("~/.ssh/tools.pub")
+  # ~ means windows home directory
+}
 
-# module "nexus" {
-#   source  = "terraform-aws-modules/ec2-instance/aws"
+module "nexus" {
+  source  = "terraform-aws-modules/ec2-instance/aws"
 
-#   name = "nexus"
+  name = "nexus"
 
-#   instance_type          = "t3.medium"
-#   vpc_security_group_ids = ["sg-0fea5e49e962e81c9"]
-#   # convert StringList to list and get first element
-#   subnet_id = "subnet-0ea509ad4cba242d7"
-#   ami = data.aws_ami.nexus_ami_info.id
-#   key_name = aws_key_pair.tools.key_name
-#   root_block_device = [
-#     {
-#       volume_type = "gp3"
-#       volume_size = 30
-#     }
-#   ]
-#   tags = {
-#     Name = "nexus"
-#   }
-# }
+  instance_type          = "t3.medium"
+  vpc_security_group_ids = ["sg-09a1b15d4ef9d64c8"]
+  # convert StringList to list and get first element
+  subnet_id = "subnet-05b17a0deae7bc1da"
+  ami = data.aws_ami.nexus_ami_info.id
+  key_name = aws_key_pair.tools.key_name
+  root_block_device = [
+    {
+      volume_type = "gp3"
+      volume_size = 30
+    }
+  ]
+  tags = {
+    Name = "nexus"
+  }
+}
 
 module "records" {
   source  = "terraform-aws-modules/route53/aws//modules/records"
@@ -84,15 +84,15 @@ module "records" {
       ]
       allow_overwrite = true
     }
-    # {
-    #   name    = "nexus"
-    #   type    = "A"
-    #   ttl     = 1
-    #   allow_overwrite = true
-    #   records = [
-    #     module.nexus.private_ip
-    #   ]
-    #   allow_overwrite = true
-    # }
+     {
+       name    = "nexus"
+       type    = "A"
+       ttl     = 1
+       allow_overwrite = true
+      records = [
+         module.nexus.private_ip
+       ]
+       allow_overwrite = true
+     }
   ]
 }
