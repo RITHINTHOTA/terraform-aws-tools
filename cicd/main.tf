@@ -83,8 +83,8 @@ module "records" {
         module.jenkins_agent.private_ip
       ]
       allow_overwrite = true
-    }
-     {
+    },
+    {
        name    = "nexus"
        type    = "A"
        ttl     = 1
